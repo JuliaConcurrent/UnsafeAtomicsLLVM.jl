@@ -1,0 +1,13 @@
+name = "UnsafeAtomicsLLVMCUDATests"
+uuid = "90414a69-cb83-48b8-8d85-798f9be6b627"
+authors = ["Takafumi Arakaki <aka.tkf@gmail.com> and contributors"]
+version = "0.1.0-DEV"
+
+[deps]
+Atomix = "a9b6321e-bd34-4604-b9c9-b65b8de01458"
+CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+UnsafeAtomicsLLVM = "d80eeb9a-aca5-4d75-85e5-170c8b632249"
+
+[compat]
+julia = "1.6"
