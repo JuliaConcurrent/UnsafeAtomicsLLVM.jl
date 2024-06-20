@@ -1,0 +1,11 @@
+[deps]
+Atomix = "a9b6321e-bd34-4604-b9c9-b65b8de01458"
+CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
+LLVM = "929cbde3-209d-540e-8aea-75f648917ca0"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+TestFunctionRunner = "792026f5-ac9a-4a19-adcb-47b0ce2deb5d"
+UnsafeAtomicsLLVM = "d80eeb9a-aca5-4d75-85e5-170c8b632249"
+UnsafeAtomicsLLVMCUDATests = "90414a69-cb83-48b8-8d85-798f9be6b627"
+
+[compat]
+TestFunctionRunner = "0.1"
