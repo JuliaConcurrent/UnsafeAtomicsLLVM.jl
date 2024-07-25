@@ -20,6 +20,12 @@ mapop(::typeof(UnsafeAtomics.right)) = right
 @inline UnsafeAtomics.modify!(ptr::LLVMPtr, op::OP, x, order::Ordering) where {OP} =
     atomic_pointermodify(ptr, mapop(op), x, Val{julia_ordering_name(order)}())
 
+@inline UnsafeAtomics.modify!(
+    ptr::LLVMPtr, op::OP, x, order::Ordering, syncscope::Syncscopes = SyncscopeSystem,
+) where {OP <: Union{typeof(+), typeof(-)}} = atomic_pointermodify(
+    ptr, mapop(op), x, Val{julia_ordering_name(order)}(), syncscope,
+)
+
 @inline UnsafeAtomics.cas!(
     ptr::LLVMPtr,
     expected,
