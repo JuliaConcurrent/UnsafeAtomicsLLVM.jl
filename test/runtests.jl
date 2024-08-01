@@ -29,18 +29,6 @@ function check_default_ordering(T::Type)
             xs[1] = x1
             @test rmw(ptr, x2) === x1
             @test xs[1] === op(x1, x2)
-
-            # Test syncscopes.
-            if (op == +) || (op == -)
-                @info "!!!!!!!!!!!!!!!!!!!"
-                xs[1] = x1
-                @test UnsafeAtomics.modify!(ptr, op, x2, seq_cst, UnsafeAtomicsLLVM.Internal.SyncscopeSystem) === (x1 => op(x1, x2))
-                @test xs[1] === op(x1, x2)
-
-                xs[1] = x1
-                @test UnsafeAtomics.modify!(ptr, op, x2, seq_cst, UnsafeAtomicsLLVM.Internal.SyncscopeSingleThread) === (x1 => op(x1, x2))
-                @test xs[1] === op(x1, x2)
-            end
         end
     end
 end
@@ -69,6 +57,29 @@ function test_explicit_ordering(T::Type = UInt)
             xs[1] = x1
             @test rmw(ptr, x2, acquire) === x1
             @test xs[1] === op(x1, x2)
+
+            # Test syncscopes.
+            if (op == +) || (op == -)
+                xs[1] = x1
+                @test UnsafeAtomics.modify!(
+                    ptr,
+                    op,
+                    x2,
+                    seq_cst,
+                    UnsafeAtomicsLLVM.Internal.SyncscopeSystem,
+                ) === (x1 => op(x1, x2))
+                @test xs[1] === op(x1, x2)
+
+                xs[1] = x1
+                @test UnsafeAtomics.modify!(
+                    ptr,
+                    op,
+                    x2,
+                    seq_cst,
+                    UnsafeAtomicsLLVM.Internal.SyncscopeSingleThread,
+                ) === (x1 => op(x1, x2))
+                @test xs[1] === op(x1, x2)
+            end
         end
     end
 end
@@ -76,7 +87,6 @@ end
 @testset "UnsafeAtomicsLLVM" begin
     @testset for T in inttypes
         check_default_ordering(T)
-        # test_explicit_ordering(T)
-        break
+        test_explicit_ordering(T)
     end
 end

@@ -259,17 +259,13 @@ const AtomicRMWBinOpVal = Union{(Val{binop} for (_, _, binop) in binoptable)...}
 # Syncscopes.
 const SyncscopeSystem = Val{:system}()
 const SyncscopeSingleThread = Val{:singlethread}()
-# AMDGPU-specific to enable fast hardware floating-point atomics:
-# https://llvm.org/docs/AMDGPUUsage.html#memory-scopes
 const SyncscopeAgent = Val{:agent}()
 
-const Syncscopes = Union{
-    typeof(SyncscopeSystem),
-    typeof(SyncscopeSingleThread),
-    typeof(SyncscopeAgent)}
+const Syncscopes =
+    Union{typeof(SyncscopeSystem),typeof(SyncscopeSingleThread),typeof(SyncscopeAgent)}
 
 # LLVM API accepts string literal as a syncscope argument.
-@inline syncscope_to_string(::Type{Val{S}}) where S = string(S)
+@inline syncscope_to_string(::Type{Val{S}}) where {S} = string(S)
 
 @generated function llvm_atomic_op(
     binop::AtomicRMWBinOpVal,
@@ -333,7 +329,8 @@ end
                 typed_ptr,
                 parameters(llvm_f)[2],
                 _valueof(order()),
-                syncscope_to_string(syncscope))
+                syncscope_to_string(syncscope),
+            )
 
             ret!(builder, rv)
         end
@@ -409,9 +406,16 @@ for (opname, op, llvmop) in binoptable
             order::AtomicOrdering,
             syncscope::Syncscopes = SyncscopeSystem,
         )
-            old = syncscope isa typeof(SyncscopeSystem) ?
+            old =
+                syncscope isa typeof(SyncscopeSystem) ?
                 llvm_atomic_op($(Val(llvmop)), ptr, x, llvm_from_julia_ordering(order)) :
-                llvm_atomic_op($(Val(llvmop)), ptr, x, llvm_from_julia_ordering(order), syncscope)
+                llvm_atomic_op(
+                    $(Val(llvmop)),
+                    ptr,
+                    x,
+                    llvm_from_julia_ordering(order),
+                    syncscope,
+                )
             return old => $op(old, x)
         end
     end
