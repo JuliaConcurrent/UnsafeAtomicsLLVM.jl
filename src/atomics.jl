@@ -256,14 +256,6 @@ end
 
 const AtomicRMWBinOpVal = Union{(Val{binop} for (_, _, binop) in binoptable)...}
 
-# Syncscopes.
-const SyncscopeSystem = Val{:system}()
-const SyncscopeSingleThread = Val{:singlethread}()
-const SyncscopeAgent = Val{:agent}()
-
-const Syncscopes =
-    Union{typeof(SyncscopeSystem),typeof(SyncscopeSingleThread),typeof(SyncscopeAgent)}
-
 # LLVM API accepts string literal as a syncscope argument.
 @inline syncscope_to_string(::Type{Val{S}}) where {S} = string(S)
 
@@ -309,8 +301,8 @@ end
     ptr::LLVMPtr{T,A},
     val::T,
     order::LLVMOrderingVal,
-    syncscope::Syncscopes,
-) where {T,A}
+    syncscope::Val{S},
+) where {T,A,S}
     @dispose ctx = Context() begin
         T_val = convert(LLVMType, T)
         T_ptr = convert(LLVMType, ptr)
@@ -404,10 +396,10 @@ for (opname, op, llvmop) in binoptable
             ::$(typeof(op)),
             x::$T,
             order::AtomicOrdering,
-            syncscope::Syncscopes = SyncscopeSystem,
-        )
+            syncscope::Val{S} = Val{:system}(),
+        ) where {S}
             old =
-                syncscope isa typeof(SyncscopeSystem) ?
+                syncscope isa Val{:system} ?
                 llvm_atomic_op($(Val(llvmop)), ptr, x, llvm_from_julia_ordering(order)) :
                 llvm_atomic_op(
                     $(Val(llvmop)),
