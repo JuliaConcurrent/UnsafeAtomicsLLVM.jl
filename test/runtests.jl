@@ -66,7 +66,7 @@ function test_explicit_ordering(T::Type = UInt)
                     op,
                     x2,
                     seq_cst,
-                    Val{:system}(),
+                    Val(:system),
                 ) === (x1 => op(x1, x2))
                 @test xs[1] === op(x1, x2)
 
@@ -76,7 +76,7 @@ function test_explicit_ordering(T::Type = UInt)
                     op,
                     x2,
                     seq_cst,
-                    Val{:singlethread}(),
+                    Val(:singlethread),
                 ) === (x1 => op(x1, x2))
                 @test xs[1] === op(x1, x2)
             end

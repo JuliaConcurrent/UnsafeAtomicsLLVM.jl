@@ -248,11 +248,9 @@ const binoptable = [
     (:umin, min, LLVM.API.LLVMAtomicRMWBinOpUMin),
     (:fadd, +, LLVM.API.LLVMAtomicRMWBinOpFAdd),
     (:fsub, -, LLVM.API.LLVMAtomicRMWBinOpFSub),
+    (:fmax, max, LLVM.API.LLVMAtomicRMWBinOpFMax),
+    (:fmin, min, LLVM.API.LLVMAtomicRMWBinOpFMin),
 ]
-if VERSION ≥ v"1.10-"
-    push!(binoptable, (:fmax, max, LLVM.API.LLVMAtomicRMWBinOpFMax))
-    push!(binoptable, (:fmin, min, LLVM.API.LLVMAtomicRMWBinOpFMin))
-end
 
 const AtomicRMWBinOpVal = Union{(Val{binop} for (_, _, binop) in binoptable)...}
 
