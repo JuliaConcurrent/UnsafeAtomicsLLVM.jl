@@ -62,12 +62,12 @@ function test_explicit_ordering(T::Type = UInt)
             if (op == +) || (op == -)
                 xs[1] = x1
                 @test UnsafeAtomics.modify!(ptr, op, x2, seq_cst, Val(:system)) ===
-                    (x1 => op(x1, x2))
+                      (x1 => op(x1, x2))
                 @test xs[1] === op(x1, x2)
 
                 xs[1] = x1
                 @test UnsafeAtomics.modify!(ptr, op, x2, seq_cst, Val(:singlethread)) ===
-                    (x1 => op(x1, x2))
+                      (x1 => op(x1, x2))
                 @test xs[1] === op(x1, x2)
             end
         end
