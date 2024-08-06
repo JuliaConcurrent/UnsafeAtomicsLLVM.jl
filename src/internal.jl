@@ -26,7 +26,7 @@ mapop(::typeof(UnsafeAtomics.right)) = right
     x,
     order::Ordering,
     syncscope::Val{S} = Val(:system),
-) where {OP<:Union{typeof(+),typeof(-)}, S} =
+) where {OP<:Union{typeof(+),typeof(-)},S} =
     atomic_pointermodify(ptr, mapop(op), x, Val{julia_ordering_name(order)}(), syncscope)
 
 @inline UnsafeAtomics.cas!(
