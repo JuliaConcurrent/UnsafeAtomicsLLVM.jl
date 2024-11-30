@@ -13,7 +13,7 @@ function check_default_ordering(T::Type)
     check_default_ordering(xs, x1, x2)
 end
 
-function check_default_ordering(xs::AbstractArray{T}, x1::T, x2::T,) where T
+function check_default_ordering(xs::AbstractArray{T}, x1::T, x2::T) where {T}
     @debug "xs=$(repr(xs)) x1=$(repr(x1)) x2=$(repr(x2))"
 
     ptr = llvmptr(xs, 1)
@@ -45,7 +45,7 @@ function test_explicit_ordering(T::Type = UInt)
     test_explicit_ordering(xs, x1, x2)
 end
 
-function test_explicit_ordering(xs::AbstractArray{T}, x1::T, x2::T,) where T
+function test_explicit_ordering(xs::AbstractArray{T}, x1::T, x2::T) where {T}
     @debug "xs=$(repr(xs)) x1=$(repr(x1)) x2=$(repr(x2))"
 
     ptr = llvmptr(xs, 1)
