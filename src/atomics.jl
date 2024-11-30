@@ -191,9 +191,9 @@ end
     if sizeof(T) == 0
         # Mimicking what `Core.Intrinsics.atomic_pointerset` generates.
         # See: https://github.com/JuliaLang/julia/blob/v1.7.2/src/cgutils.cpp#L1570-L1572
-        is_stronger_than_monotonic(order) || return :ptr
         return quote
-            Core.Intrinsics.fence($(QuoteNode(order)))
+            is_stronger_than_monotonic(_valueof(order)) || return :ptr
+            Core.Intrinsics.atomic_fence(_valueof(order))
             ptr
         end
     end
